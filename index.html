@@ -705,7 +705,6 @@ body.content-active #main-invitation {
             </div>
         </div>
 
-        <!-- Cuerpo del sobre: Estilo Esmeralda Liso -->
         <div class="envelope-body">
             <svg class="env-svg-main" viewBox="0 0 310 210" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
@@ -807,9 +806,7 @@ body.content-active #main-invitation {
                 <svg viewBox="0 0 24 24"><path d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.55 18.55 20 18 20H6C5.45 20 5 19.55 5 19V18H19V19Z"/></svg>
             </div>
 
-            <!-- Contenedor Hero con Detalles Florales Laterales -->
             <div class="hero-container">
-                <!-- Diseño floral Izquierdo -->
                 <svg class="hero-floral left" viewBox="0 0 50 150" xmlns="http://www.w3.org/2000/svg">
                     <path d="M25,150 C20,100 40,50 20,0" fill="none" stroke="var(--text-accent)" stroke-width="1.8" stroke-linecap="round"/>
                     <path d="M25,120 Q10,110 5,95 Q15,90 23,105" fill="var(--text-accent)" opacity="0.75"/>
@@ -822,7 +819,6 @@ body.content-active #main-invitation {
                     <img src="assets/paula-hero.jpg" alt="Miranda" class="hero-photo">
                 </div>
 
-                <!-- Diseño floral Derecho -->
                 <svg class="hero-floral right" viewBox="0 0 50 150" xmlns="http://www.w3.org/2000/svg">
                     <path d="M25,150 C20,100 40,50 20,0" fill="none" stroke="var(--text-accent)" stroke-width="1.8" stroke-linecap="round"/>
                     <path d="M25,120 Q10,110 5,95 Q15,90 23,105" fill="var(--text-accent)" opacity="0.75"/>
@@ -973,7 +969,6 @@ body.content-active #main-invitation {
             
             <div class="divider-ornate"><div class="divider-ornate-diamond"></div></div>
 
-            <!-- MESA DE REGALOS (Lluvia de Sobres) -->
             <div class="bloque-vidrio-alt">
                 <div class="section-heading">Mesa de Regalos</div>
                 <p class="rsvp-intro" style="margin-bottom: 12px;">Tu presencia es mi mejor regalo, pero si deseas tener un detalle conmigo, habrá un buzón en la recepción para lluvia de sobres.</p>
@@ -1199,36 +1194,35 @@ function openEnvelope() {
             }
         }
 
-        /* ===== MURO DE DESEOS ===== */
-        const WISH_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuWFYPYPsSC3hPkZ61UlYd9SbAn3cL3DS4GvSYQhYWx-zBAlR0XwkQfEyY0mKBGXO1/exec";
-
+        /* ===== MURO DE DESEOS (WHATSAPP) ===== */
         const wishForm = document.getElementById('wish-form');
         if(wishForm) {
-            wishForm.addEventListener('submit', async function(e) {
+            wishForm.addEventListener('submit', function(e) {
                 e.preventDefault(); 
                 
+                const nombre = document.getElementById('wish-nombre').value.trim();
+                const mensaje = document.getElementById('wish-mensaje').value.trim();
                 const btn = document.getElementById('btn-wish');
-                const nombre = document.getElementById('wish-nombre').value;
-                const mensaje = document.getElementById('wish-mensaje').value;
                 const originalContent = btn.innerHTML;
                 
-                btn.innerHTML = 'Enviando...';
+                if (!nombre || !mensaje) {
+                    alert('Por favor, completa ambos campos para enviar tus deseos.');
+                    return;
+                }
+
+                // Construcción del mensaje para WhatsApp
+                const wpMsg = `¡Hola Miranda! Te dejo mis mejores deseos para tus XV Años 🌸\n\n*De:* ${nombre}\n*Mensaje:* ${mensaje}`;
+                
+                // Redirección a WhatsApp usando el mismo número de la confirmación
+                window.open(`https://wa.me/522281203998?text=${encodeURIComponent(wpMsg)}`,'_blank');
+                
+                // Efecto visual en el botón
+                btn.innerHTML = '¡Abriendo WhatsApp...!';
                 btn.style.opacity = '0.7';
                 btn.disabled = true;
 
-                try {
-                    await fetch(WISH_SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'text/plain' },
-                        body: JSON.stringify({ type: 'wish', nombre: nombre, mensaje: mensaje })
-                    });
-                } catch(err) { 
-                    console.log("Error de conexión:", err); 
-                }
-
                 setTimeout(() => {
-                    btn.innerHTML = '¡Mensaje Enviado!';
+                    btn.innerHTML = '¡Mensaje Preparado!';
                     btn.style.background = 'linear-gradient(135deg, rgba(30,75,60,0.95), rgba(38,109,88,0.95))';
                     btn.style.opacity = '1';
                     wishForm.reset();
